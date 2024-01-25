@@ -23,6 +23,7 @@ type ClusterCmdable interface {
 	ClusterSaveConfig(ctx context.Context) *StatusCmd
 	ClusterSlaves(ctx context.Context, nodeID string) *StringSliceCmd
 	ClusterFailover(ctx context.Context) *StatusCmd
+	ClusterFailoverTakeover(ctx context.Context) *StatusCmd
 	ClusterAddSlots(ctx context.Context, slots ...int) *StatusCmd
 	ClusterAddSlotsRange(ctx context.Context, min, max int) *StatusCmd
 	ReadOnly(ctx context.Context) *StatusCmd
@@ -154,6 +155,12 @@ func (c cmdable) ClusterSlaves(ctx context.Context, nodeID string) *StringSliceC
 
 func (c cmdable) ClusterFailover(ctx context.Context) *StatusCmd {
 	cmd := NewStatusCmd(ctx, "cluster", "failover")
+	_ = c(ctx, cmd)
+	return cmd
+}
+
+func (c cmdable) ClusterFailoverTakeover(ctx context.Context) *StatusCmd {
+	cmd := NewStatusCmd(ctx, "cluster", "failover", "takeover")
 	_ = c(ctx, cmd)
 	return cmd
 }
